@@ -20,16 +20,18 @@ public class PlayerController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        rb.velocity = GetMovement()* speed;
+        Vector3 aimDir=transform.TransformDirection(GetMovement());
+        rb.AddForce(aimDir * speed);
         
     }
     Vector3 GetMovement()
     {
         float xmove = Input.GetAxis("Horizontal");
         float zmove = Input.GetAxis("Vertical");
-        Vector3 move = new Vector3(xmove, 0, zmove);
+        Vector3 dir = new Vector3(xmove, 0, zmove);
+        
         Debug.DrawRay(transform.position, rb.velocity, Color.yellow);
-        Debug.DrawRay(transform.position, move*2, Color.red);
-        return move;
+        Debug.DrawRay(transform.position, transform.TransformDirection(dir * 2), Color.red);
+        return dir;
     }
 }
