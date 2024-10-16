@@ -7,6 +7,10 @@ public class PlayerController : MonoBehaviour
 {
     Rigidbody rb;
     public float speed = 2f;
+    public float JumpForce = 10f;
+    public bool onGround;
+    public float gravityScale = 5;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -20,9 +24,13 @@ public class PlayerController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        Vector3 aimDir=transform.TransformDirection(GetMovement());
-        rb.AddForce(aimDir * speed);
         
+        Vector3 aimDir=transform.TransformDirection(GetMovement());
+
+        rb.MovePosition(transform.position+ aimDir * speed*Time.deltaTime);
+        rb.AddForce(Jump() * JumpForce);
+        rb.AddForce(Physics.gravity * (gravityScale - 1) * rb.mass);
+        onGround = false;
     }
     Vector3 GetMovement()
     {
@@ -34,4 +42,18 @@ public class PlayerController : MonoBehaviour
         Debug.DrawRay(transform.position, transform.TransformDirection(dir * 2), Color.red);
         return dir;
     }
+    Vector3 Jump()
+    {
+        if (onGround)
+            return Vector3.up * JumpForce * Input.GetAxisRaw("Jump");
+        else
+            return Vector3.zero;
+        
+    }
+    private void OnCollisionStay(Collision collision)
+    {
+        if(rb.velocity.y<=0)
+        onGround = true;
+    }
+
 }
