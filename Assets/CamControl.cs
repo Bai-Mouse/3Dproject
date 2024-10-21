@@ -6,7 +6,7 @@ using UnityEngine;
 public class CamControl : MonoBehaviour
 {
     Vector3 myLook;
-    float lookSpeed = 500f;
+    float lookSpeed = 1000f;
     public Camera myCam;
     public float camlook = 90f;
 
