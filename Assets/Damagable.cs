@@ -12,4 +12,7 @@ public interface Damagable
     public void gethit(float damage)
     {
     }
+    public void gethit(float damage,Vector3 dir)
+    {
+    }
 }

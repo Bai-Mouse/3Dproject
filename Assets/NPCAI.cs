@@ -13,7 +13,7 @@ public class NPCAI : MonoBehaviour, Damagable
     public ParticleSystem gethiteffect;
     public float health { get; set; }
     public float maxHealth { get ; set; }
-    public void gethit(float damage)
+    public void gethit(float damage, Vector3 dir)
     {
         health-=damage;
         gethiteffect.Play();
@@ -21,6 +21,10 @@ public class NPCAI : MonoBehaviour, Damagable
         {
             Destroy(gameObject);
         }
+        Target = GameObject.FindGameObjectWithTag("Player");
+        body.AddForce(dir*2,ForceMode.Impulse);
+        body.freezeRotation = false;
+        GetComponent<Renderer>().material.color = Color.white;
     }
 
     void Start()
@@ -35,6 +39,8 @@ public class NPCAI : MonoBehaviour, Damagable
     // Update is called once per frame
     void Update()
     {
+        if(health==maxHealth)
+        body.MovePosition(Vector3.MoveTowards(transform.position, Target.transform.position, mySpeed));
         
     }
 }
