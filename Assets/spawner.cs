@@ -10,14 +10,14 @@ public class spawner : MonoBehaviour
     float timer;
     void Start()
     {
-        timer = 5;
+        timer = 100;
     }
 
     // Update is called once per frame
     void Update()
     {
         timer+= Time.deltaTime;
-        if (timer >= 5)
+        if (timer >= 20)
         {
             Instantiate(enemy).transform.position=transform.position;
             timer = 0;

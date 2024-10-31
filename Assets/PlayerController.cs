@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,13 +13,29 @@ public class PlayerController : MonoBehaviour
     public float JumpForce = 10f;
     public bool onGround;
     public float gravityScale = 5;
-    
+    public int LavaLayer;
+    public float Temp,TempA;
+    public Slider Slider;
+    public bool Dead;
+    public GameObject RestartButton;
+    public GameObject Winning;
+    bool touchinglava;
     // Start is called before the first frame update
     void Start()
     {
+        RestartButton.SetActive(false);
         rb = GetComponent<Rigidbody>();
-    }
+        Slider.maxValue = 250;
+        Slider.value = 0;
+        Slider.gameObject.SetActive(false);
+        LavaLayer = LayerMask.NameToLayer("Lava");
 
+    }
+    public void Restart()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.name);
+    }
     // Update is called once per frame
     void Update()
     {
@@ -24,13 +43,46 @@ public class PlayerController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        
-        Vector3 aimDir=transform.TransformDirection(GetMovement());
+        if (!Dead)
+        {
+            Vector3 aimDir = transform.TransformDirection(GetMovement());
 
-        rb.MovePosition(transform.position+ aimDir * speed*Time.deltaTime);
-        rb.AddForce(Jump() * JumpForce);
-        rb.AddForce(Physics.gravity * (gravityScale - 1) * rb.mass);
+            rb.MovePosition(transform.position + aimDir * speed * Time.deltaTime);
+            rb.AddForce(Jump() * JumpForce);
+            rb.AddForce(Physics.gravity * (gravityScale - 1) * rb.mass);
+        }
+        
         onGround = false;
+            
+        Slider.value = Temp;
+        if(touchinglava)
+        Temp += TempA;
+        if (TempA <= 0)
+        {
+            Temp -= Time.fixedDeltaTime * 5;
+        }
+        else
+        {
+            if (!touchinglava)
+            {
+                TempA -=Time.fixedDeltaTime;
+            }
+        }
+            if (Temp <= 0)
+            {
+                Slider.gameObject.SetActive(false);
+                TempA = 0;
+                Temp=0;
+            }
+        
+        if (Temp >= 250)
+        {
+            Temp = 250;
+            Dead = true;
+            rb.freezeRotation = false;
+            rb.AddTorque(3, 0, 0);
+            RestartButton.SetActive(true);
+        }
     }
     Vector3 GetMovement()
     {
@@ -55,5 +107,29 @@ public class PlayerController : MonoBehaviour
         if(rb.velocity.y<=0)
         onGround = true;
     }
+    private void OnTriggerStay(Collider other)
+    {
 
+        if(other.gameObject.layer== LavaLayer)
+        {
+            Slider.gameObject.SetActive(true);
+            if (Temp == 0)
+            {
+                Temp = 0.01f;
+            }
+            TempA += Time.fixedDeltaTime*2;
+            touchinglava = true;
+        }
+        if(other.gameObject.tag == "Wining")
+        {
+            Winning.SetActive(true);
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == LavaLayer)
+        {
+            touchinglava=false;
+        }
+    }
 }
