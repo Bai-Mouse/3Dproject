@@ -71,7 +71,7 @@ public class NPCAI : MonoBehaviour, Damagable
         if (health >= maxHealth / 2)
             if (collision.gameObject.tag == "Player")
         {
-            collision.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward*5, ForceMode.Impulse);
+            collision.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward, ForceMode.Impulse);
         }
     }
 }
