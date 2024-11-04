@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     Rigidbody rb;
+    public float HeatLimit=100f;
     public float speed = 2f;
     public float JumpForce = 10f;
     public bool onGround;
@@ -25,7 +26,7 @@ public class PlayerController : MonoBehaviour
     {
         RestartButton.SetActive(false);
         rb = GetComponent<Rigidbody>();
-        Slider.maxValue = 250;
+        Slider.maxValue = HeatLimit;
         Slider.value = 0;
         Slider.gameObject.SetActive(false);
         LavaLayer = LayerMask.NameToLayer("Lava");
@@ -75,9 +76,9 @@ public class PlayerController : MonoBehaviour
                 Temp=0;
             }
         
-        if (Temp >= 250)
+        if (Temp >= HeatLimit)
         {
-            Temp = 250;
+            Temp = HeatLimit;
             Dead = true;
             rb.freezeRotation = false;
             rb.AddTorque(3, 0, 0);

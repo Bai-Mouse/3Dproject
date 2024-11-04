@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
+
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -13,6 +13,7 @@ public class NPCAI : MonoBehaviour, Damagable
     public NPCAI myScript;
     public float healthvalue;
     public ParticleSystem gethiteffect;
+    public float strenght=2f;
     public float health { get; set; }
     public float maxHealth { get ; set; }
     public void gethit(float damage, Vector3 dir)
@@ -71,7 +72,7 @@ public class NPCAI : MonoBehaviour, Damagable
         if (health >= maxHealth / 2)
             if (collision.gameObject.tag == "Player")
         {
-            collision.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward, ForceMode.Impulse);
+            collision.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward* strenght, ForceMode.Impulse);
         }
     }
 }
